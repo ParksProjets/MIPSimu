@@ -1,0 +1,59 @@
+#!/usr/bin/python3
+"""
+
+Convert an ELF file into a binary file.
+
+Copyright (C) 2018, Guillaume Gonnet
+License MIT
+
+"""
+
+import argparse
+import subprocess
+import os.path as path
+
+
+# GNU objcopy
+GCC_PREFIX = "/opt/mips-toolchain/bin/mips-sde-elf-"
+OBJCOPY = "%sobjcopy" % GCC_PREFIX
+
+# Scetions to use
+SECTIONS = ("text", "data", "sdata", "bss", "rodata", "irq_vec")
+
+
+def elf_to_bin(inname, outname, gap_fill):
+    "Convert an ELF file into binary."
+
+    args = ["-O",  "binary"]
+    args += ["--only-section=.%s" % s for s in SECTIONS]
+
+    if gap_fill:
+        args += ["--gap-fill", "0xFF"]
+
+    subprocess.call([OBJCOPY, *args, inname, outname])
+    assert path.isfile(outname), "The binary file has not been generated."
+
+
+
+def main():
+    "Entry point of the application."
+
+    parser = argparse.ArgumentParser(prog="elf2bin",
+        description="Convert an ELF file into a binary file.")
+
+    parser.add_argument("elf", help="input ELF filename (.elf)")
+    parser.add_argument("-o", help="output binary filename (.bin)",
+        default=None, metavar="outname")
+    parser.add_argument("-FF", help="replace empty sections by 0xFF",
+        action="store_true")
+
+    args = parser.parse_args()
+
+    if not args.o:
+        args.o = args.elf.replace(".elf", ".bin")
+
+    elf_to_bin(args.elf, args.o, args.FF)
+
+
+if __name__ == "__main__":
+    main()

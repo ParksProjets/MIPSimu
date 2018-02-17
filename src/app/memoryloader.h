@@ -1,0 +1,36 @@
+/*
+
+Load the RAM memory.
+
+Copyright (C) 2018, Guillaume Gonnet
+License MIT
+
+*/
+
+#pragma once
+
+#include "peripherals/ram.h"
+
+#include <QtCore/QString>
+
+namespace app {
+
+
+// Load the RAM memory.
+class MemoryLoader {
+public:
+
+    MemoryLoader(peripherals::Ram &ram);
+
+
+    // Load a file into the memory.
+    void Load(const QString &filename);
+
+
+private:
+
+    peripherals::Ram &ram_;
+};
+
+
+} // namespace app

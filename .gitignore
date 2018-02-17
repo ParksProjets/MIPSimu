@@ -1,0 +1,7 @@
+# Ignore build directories
+build/
+build32/
+build64/
+
+# Ignore object directories
+tests/obj
