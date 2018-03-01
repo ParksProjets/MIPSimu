@@ -20,7 +20,7 @@ namespace app {
 class MemoryLoader {
 public:
 
-    MemoryLoader(peripherals::Ram &ram);
+    MemoryLoader(peripherals::Ram &ram, peripherals::Ram &ram2, bool use_ram2);
 
 
     // Load a file into the memory.
@@ -30,6 +30,9 @@ public:
 private:
 
     peripherals::Ram &ram_;
+    peripherals::Ram &ram2_;
+
+    bool use_ram2_;
 };
 
 

@@ -28,6 +28,9 @@ int main(int argc, char* argv[])
     QCommandLineOption debug_option("d", "Enable debug mode.");
     parser.addOption(debug_option);
 
+    QCommandLineOption ram2_option("r2", "Use the second RAM.");
+    parser.addOption(ram2_option);
+
     QCommandLineOption offset_option("o", "Start cycle offset (default=0).", "number");
     offset_option.setDefaultValue("0");
     parser.addOption(offset_option);
@@ -36,7 +39,7 @@ int main(int argc, char* argv[])
     int offset = parser.value("o").toInt();
 
     app::MainWindow window;
-    app::System system(window, parser.isSet("d"), offset);
+    app::System system(window, parser.isSet("r2"), parser.isSet("d"), offset);
 
     auto args = parser.positionalArguments();
 

@@ -17,7 +17,7 @@ import os.path as path
 GCC_PREFIX = "/opt/mips-toolchain/bin/mips-sde-elf-"
 OBJCOPY = "%sobjcopy" % GCC_PREFIX
 
-# Scetions to use
+# Sections to use
 SECTIONS = ("text", "data", "sdata", "bss", "rodata", "irq_vec")
 
 
@@ -42,8 +42,10 @@ def main():
         description="Convert an ELF file into a binary file.")
 
     parser.add_argument("elf", help="input ELF filename (.elf)")
+
     parser.add_argument("-o", help="output binary filename (.bin)",
         default=None, metavar="outname")
+
     parser.add_argument("-FF", help="replace empty sections by 0xFF",
         action="store_true")
 
