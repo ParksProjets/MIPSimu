@@ -117,6 +117,7 @@ void Processor::ProcessNormalInst()
 
         default:
             qWarning("Unknown instruction with OPCODE = %#01X at PC = %#04X.", d.opcode, pc-4);
+            qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
     }
 }
 
@@ -183,6 +184,7 @@ void Processor::ProcessSpecialInst()
 
         default:
             qWarning("Unknown 'special' instruction with FUNC = %#01X at PC = %#04X.", d.func, pc-4);
+            qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
     }
 }
 
@@ -212,6 +214,7 @@ void Processor::ProcessRegImmInst()
 
         default:
             qWarning("Unknown 'regimm' instruction with RT = %#01X at PC = %#04X.", d.rt, pc-4);
+            qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
     }
 }
 
