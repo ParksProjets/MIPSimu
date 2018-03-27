@@ -9,10 +9,13 @@ project(mipsimu)
 
 
 # Unit tests
-option(ENABLE_MIPSIMU_TESTS "Enable MIPSimu unit tests." OFF)
-if(ENABLE_MIPSIMU_TESTS)
+option(MIPSIMU_ENABLE_TESTS "Enable MIPSimu unit tests." OFF)
+if(MIPSIMU_ENABLE_TESTS)
     add_subdirectory(unittests)
 endif()
+
+# Build the native version
+option(MIPSIMU_BUILD_NATIVE "Build MIPSimu native or JS version?" ON)
 
 
 # Include source directory
@@ -43,19 +46,6 @@ set(SOURCES
     "src/peripherals/vga.h"
     "src/peripherals/vga.cc"
 
-    "src/app/system.h"
-    "src/app/system.cc"
-    "src/app/sysworker.h"
-    "src/app/sysworker.cc"
-    "src/app/memoryloader.h"
-    "src/app/memoryloader.cc"
-    "src/app/screen.h"
-    "src/app/screen.cc"
-    "src/app/keyboard.h"
-    "src/app/keyboard.cc"
-    "src/app/mainwindow.h"
-    "src/app/mainwindow.cc"
-
     "src/debugger/asm/disassembler.h"
     "src/debugger/asm/disassembler.cc"
     "src/debugger/peripheral.h"
@@ -64,15 +54,23 @@ set(SOURCES
     "src/debugger/debugger.cc"
 
     "src/utils/range.h"
-    "src/main.cc"
 )
+
+
+# Select the right configuration.
+if(MIPSIMU_BUILD_NATIVE)
+    add_subdirectory("src/native-app")
+
+    set(SOURCES ${SOURCES} "src/native-app/main.cc")
+    link_libraries(mipsimu-native Qt5::Widgets)
+else()
+    add_subdirectory("src/js-app")
+
+    set(SOURCES ${SOURCES} "src/native-app/main.cc")
+    link_libraries(mipsimu-js)    
+endif()
 
 
 # Create the executable
 set(CMAKE_BUILD_TYPE Debug)
 add_executable(mipsimu ${SOURCES})
-
-# Link libraries.
-target_link_libraries(mipsimu
-    Qt5::Widgets
-)
