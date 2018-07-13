@@ -1,6 +1,6 @@
 /*
 
-Test the disassembler from core module.
+Test the instruction dumper of the debugger module.
 
 Copyright (C) 2018, Guillaume Gonnet
 License MIT
@@ -9,11 +9,11 @@ License MIT
 
 #include <QtTest/QtTest>
 
-#include "core/disassembler.h"
+#include "debugger/asm/inst_dump.h"
 
 
 // Test class.
-class TestCoreDisassembler : public QObject {
+class TestDebugInstDump : public QObject {
     Q_OBJECT
 
 private slots:
@@ -26,10 +26,10 @@ private slots:
 
 
 // Test a regular RType instruction.
-void TestCoreDisassembler::RegularRTypeTest()
+void TestDebugInstDump::RegularRTypeTest()
 {
-    core::Disassembler d;
-    d.Disassemble(0b00000001001010100100000000100001); // addu
+    debugger::InstDump d;
+    d.Dump(0b00000001001010100100000000100001); // addu
 
     QVERIFY(d.rs == 9);
     QVERIFY(d.rt == 10);
@@ -42,10 +42,10 @@ void TestCoreDisassembler::RegularRTypeTest()
 
 
 // Test a RType shift instruction.
-void TestCoreDisassembler::ShiftRTypeTest()
+void TestDebugInstDump::ShiftRTypeTest()
 {
-    core::Disassembler d;
-    d.Disassemble(0b00000000000010010100001111000000); // sll
+    debugger::InstDump d;
+    d.Dump(0b00000000000010010100001111000000); // sll
 
     QVERIFY(d.rt == 9);
     QVERIFY(d.rd == 8);
@@ -57,10 +57,10 @@ void TestCoreDisassembler::ShiftRTypeTest()
 
 
 // Test an IType instruction.
-void TestCoreDisassembler::ITypeTest()
+void TestDebugInstDump::ITypeTest()
 {
-    core::Disassembler d;
-    d.Disassemble(0b00110101001010000000000001001110); // ori
+    debugger::InstDump d;
+    d.Dump(0b00110101001010000000000001001110); // ori
 
     QVERIFY(d.rs == 9);
     QVERIFY(d.rt == 8);
@@ -71,10 +71,10 @@ void TestCoreDisassembler::ITypeTest()
 
 
 // Test a JType instruction.
-void TestCoreDisassembler::JTypeTest()
+void TestDebugInstDump::JTypeTest()
 {
-    core::Disassembler d;
-    d.Disassemble(0b00001000000000000010011100010000); // j
+    debugger::InstDump d;
+    d.Dump(0b00001000000000000010011100010000); // j
     
     QVERIFY(d.address == 10000);
     QVERIFY(d.opcode == 2);
@@ -82,5 +82,5 @@ void TestCoreDisassembler::JTypeTest()
 
 
 // Run the unit test.
-QTEST_MAIN(TestCoreDisassembler)
-#include "test_core_disassembler.moc"
+QTEST_MAIN(TestDebugInstDump)
+#include "test_debug_instdump.moc"

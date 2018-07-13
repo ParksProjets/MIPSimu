@@ -31,11 +31,11 @@ macro(add_mipsimu_test name)
 endmacro()
 
 
-# Test: core :: Disassembler
-add_mipsimu_test(test-core-disassembler
-    "../src/core/disassembler.h"
-    "../src/core/disassembler.cc"
-    "test_core_disassembler.cc"
+# Test: debug :: InstDump
+add_mipsimu_test(test-debug-instdump
+    "../src/debugger/asm/inst_dump.h"
+    "../src/debugger/asm/inst_dump.cc"
+    "test_debug_instdump.cc"
 )
 
 
