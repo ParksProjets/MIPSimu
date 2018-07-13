@@ -16,6 +16,22 @@ License MIT
 namespace core {
 
 
+// Get information from the instruction code.
+#define GET_OPCODE(code) (((code) >> 26) & 0b111111)
+#define GET_FUNC(code) ((code) & 0b111111)
+#define GET_SHAMT(code) (((code) >> 6) & 0b11111)
+
+#define GET_RD(code) (((code) >> 11) & 0b11111)
+#define GET_RT(code) (((code) >> 16) & 0b11111)
+#define GET_RS(code) (((code) >> 21) & 0b11111)
+
+#define GET_IMM(code) ((code) & 0xffff)
+#define GET_SIMM(code) (((code) & 0x8000) == 0 ? ((code) & 0xffff) : \
+    ((code) & 0xffff) | 0xffff0000)
+#define GET_ADDR(code) ((code) & 0x3ffffff)
+
+
+
 // Constructor
 Processor::Processor(Bus &bus)
     : bus_(bus)
@@ -39,182 +55,184 @@ void Processor::Reset()
 // Process the next instruction.
 void Processor::ProcessNext()
 {
-    d.Disassemble(bus_.GetValue(pc));
-    regs[0] = 0;
-
+    uint32_t c = bus_.GetValue(pc);
     pc += 4;
-    cpucount_ += 3;
 
-    switch(d.opcode) {
-        case 0b000000: ProcessSpecialInst(); break;
-        case 0b000001: ProcessRegImmInst(); break;
-        default:       ProcessNormalInst(); break;  
-    }
-}
+    uint32_t opcode = GET_OPCODE(c);
 
 
+    switch(opcode) {
 
-// Process a "normal" instruction.
-void Processor::ProcessNormalInst()
-{
-    switch(d.opcode) {
-        case 0b000010: // j
-            pc = (pc & 0x1E000000) | (d.address << 2);
-            cpucount_ += 1; break;
+        // Special instruction.
+        case 0b000000: switch(GET_FUNC(c)) {
+            case 0b000000: // sll
+                cpucount_ += 3;
+                regs[GET_RD(c)] = regs[GET_RT(c)] << GET_SHAMT(c); break;
 
-        case 0b000011: // jal
-            regs[31] = pc;
-            pc = (pc & 0x1E000000) | (d.address << 2);
-            cpucount_ += 2; break;
+            case 0b000010: // srl
+                cpucount_ += 3;
+                regs[GET_RD(c)] = regs[GET_RT(c)] >> GET_SHAMT(c); break;
 
-        case 0b000100: // beq
-            if (regs[d.rs] == regs[d.rt]) pc += d.signedimm << 2;
-            cpucount_ += 2; break;
+            case 0b000011: // sra
+                cpucount_ += 3;
+                regs[GET_RD(c)] = (uint32_t)((int32_t)regs[GET_RT(c)] >> GET_SHAMT(c)); break;
 
-        case 0b000101: // bne
-            if (regs[d.rt] != regs[d.rs]) pc += d.signedimm << 2;
-            cpucount_ += 2; break;
+            case 0b000100: // sllv
+                cpucount_ += 3;
+                regs[GET_RD(c)] = regs[GET_RT(c)] << regs[GET_RS(c)]; break;
 
-        case 0b000110: // blez
-            if ((int32_t)regs[d.rs] <= 0) pc += d.signedimm << 2;
-            cpucount_ += 2; break;
+            case 0b000110: // srlv
+                cpucount_ += 3;
+                regs[GET_RD(c)] = regs[GET_RT(c)] >> regs[GET_RS(c)]; break;
 
-        case 0b000111: // bgtz
-            if ((int32_t)regs[d.rs] > 0) pc += d.signedimm << 2;
-            cpucount_ += 2; break;
+            case 0b000111: // srav
+                cpucount_ += 3;
+                regs[GET_RD(c)] = (uint32_t)((int32_t)regs[GET_RT(c)] >> regs[GET_RS(c)]); break;
 
-        case 0b001000: // addi
-        case 0b001001: // addiu
-            regs[d.rt] = regs[d.rs] + d.signedimm; break;
+            case 0b001000: // jr
+                cpucount_ += 4;
+                pc = regs[GET_RS(c)]; break;
 
-        case 0b001010: // slti
-            regs[d.rt] = (int32_t)regs[d.rs] < d.signedimm ? 1 : 0;
-            cpucount_ += 1; break;
+            case 0b001001: // jalr
+                cpucount_ += 5;
+                regs[31] = pc;
+                pc = regs[GET_RS(c)]; break;
 
-        case 0b001011: // sltiu
-            regs[d.rt] = regs[d.rs] < d.signedimm ? 1 : 0;
-            cpucount_ += 1; break;
+            case 0b100000: // add
+            case 0b100001: // addu
+                cpucount_ += 3;
+                regs[GET_RD(c)] = regs[GET_RS(c)] + regs[GET_RT(c)]; break;
 
-        case 0b001100: // andi
-            regs[d.rt] = regs[d.rs] & d.immediate; break;
+            case 0b100010: // sub
+            case 0b100011: // subu
+                cpucount_ += 3;
+                regs[GET_RD(c)] = regs[GET_RS(c)] - regs[GET_RT(c)]; break;
 
-        case 0b001101: // ori
-            regs[d.rt] = regs[d.rs] | d.immediate; break;
+            case 0b100100: // and
+                cpucount_ += 3;
+                regs[GET_RD(c)] = regs[GET_RS(c)] & regs[GET_RT(c)]; break;
 
-        case 0b001110: // xori
-            regs[d.rt] = regs[d.rs] ^ d.immediate; break;
+            case 0b100101: // or
+                cpucount_ += 3;
+                regs[GET_RD(c)] = regs[GET_RS(c)] | regs[GET_RT(c)]; break;
 
-        case 0b001111: // lui
-            regs[d.rt] = d.signedimm << 16; break;
+            case 0b100110: // xor
+                cpucount_ += 3;
+                regs[GET_RD(c)] = regs[GET_RS(c)] ^ regs[GET_RT(c)]; break;
 
-        case 0b100011: // lw
-            regs[d.rt] = bus_.GetValue(regs[d.rs] + d.signedimm);
-            cpucount_ += 3; break;
+            case 0b100111: // nor
+                cpucount_ += 3;
+                regs[GET_RD(c)] = ~(regs[GET_RS(c)] | regs[GET_RT(c)]); break;
 
-        case 0b101011: // sw
-            bus_.SetValue(regs[d.rs] + d.signedimm, regs[d.rt]);
-            cpucount_ += 3; break;
+            case 0b101010: // slt
+                regs[GET_RD(c)] = ((int32_t)regs[GET_RS(c)] - (int32_t)regs[GET_RT(c)]) < 0 ? 1 : 0;
+                cpucount_ += 4; break;
 
-        default:
-            qWarning("Unknown instruction with OPCODE = %#01X at PC = %#04X.", d.opcode, pc-4);
-            qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
-    }
-}
+            case 0b101011: // sltu
+                regs[GET_RD(c)] = (int32_t)(regs[GET_RS(c)] - regs[GET_RT(c)]) < 0 ? 1 : 0;
+                cpucount_ += 4; break;
 
-
-
-// Process a special instruction.
-void Processor::ProcessSpecialInst()
-{
-    switch(d.func) {
-        case 0b000000: // sll
-            regs[d.rd] = regs[d.rt] << d.shamt; break;
-
-        case 0b000010: // srl
-            regs[d.rd] = regs[d.rt] >> d.shamt; break;
-
-        case 0b000011: // sra
-            regs[d.rd] = (uint32_t)((int32_t)regs[d.rt] >> d.shamt); break;
-
-        case 0b000100: // sllv
-            regs[d.rd] = regs[d.rt] << regs[d.rs]; break;
-
-        case 0b000110: // srlv
-            regs[d.rd] = regs[d.rt] >> regs[d.rs]; break;
-
-        case 0b000111: // srav
-            regs[d.rd] = (uint32_t)((int32_t)regs[d.rt] >> regs[d.rs]); break;
-
-        case 0b001000: // jr
-            pc = regs[d.rs];
-            cpucount_ += 1; break;
-
-        case 0b001001: // jalr
-            regs[31] = pc;
-            pc = regs[d.rs];
-            cpucount_ += 2; break;
-
-        case 0b100000: // add
-        case 0b100001: // addu
-            regs[d.rd] = regs[d.rs] + regs[d.rt]; break;
-
-        case 0b100010: // sub
-        case 0b100011: // subu
-            regs[d.rd] = regs[d.rs] - regs[d.rt]; break;
-
-        case 0b100100: // and
-            regs[d.rd] = regs[d.rs] & regs[d.rt]; break;
-
-        case 0b100101: // or
-            regs[d.rd] = regs[d.rs] | regs[d.rt]; break;
-
-        case 0b100110: // xor
-            regs[d.rd] = regs[d.rs] ^ regs[d.rt]; break;
-
-        case 0b100111: // nor
-            regs[d.rd] = ~(regs[d.rs] | regs[d.rt]); break;
-
-        case 0b101010: // slt
-            regs[d.rd] = ((int32_t)regs[d.rs] - (int32_t)regs[d.rt]) < 0 ? 1 : 0;
-            cpucount_ += 1; break;
-
-        case 0b101011: // sltu
-            regs[d.rd] = (int32_t)(regs[d.rs] - regs[d.rt]) < 0 ? 1 : 0;
-            cpucount_ += 1; break;
-
-        default:
-            qWarning("Unknown 'special' instruction with FUNC = %#01X at PC = %#04X.", d.func, pc-4);
-            qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
-    }
-}
+            default:
+                qWarning("Unknown 'special' instruction with FUNC = %#01X at PC = %#04X.",
+                    GET_FUNC(c), pc-4);
+                qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
+        } break;
 
 
+        // Reg-imm instruction.
+        case 0b000001: switch(GET_RT(c)) {
+            case 0b10000: // bltzal
+                regs[31] = pc;
+                cpucount_ += 1;
+                // Use BLTZ instruction.
 
-// Process a reg-imm instruction.
-void Processor::ProcessRegImmInst()
-{
-    switch(d.rt) {
-        case 0b10000: // bltzal
-            regs[31] = pc;
-            cpucount_ += 1;
-            // Use BLTZ instruction.
+            case 0b00000: // bltz
+                if ((int32_t)regs[GET_RS(c)] < 0) pc += GET_SIMM(c) << 2;
+                cpucount_ += 5; break;
 
-        case 0b00000: // bltz
-            if ((int32_t)regs[d.rs] < 0) pc += d.signedimm << 2;
-            cpucount_ += 2; break;
+            case 0b10001: // bgezal
+                regs[31] = pc;
+                cpucount_ += 1;
+                // Use BGEZ instruction.
 
-        case 0b10001: // bgezal
-            regs[31] = pc;
-            cpucount_ += 1;
-            // Use BGEZ instruction.
+            case 0b00001: // bgez
+                if ((int32_t)regs[GET_RS(c)] >= 0) pc += GET_SIMM(c) << 2;
+                cpucount_ += 5; break;
 
-        case 0b00001: // bgez
-            if ((int32_t)regs[d.rs] >= 0) pc += d.signedimm << 2;
-            cpucount_ += 2; break;
+            default:
+                qWarning("Unknown 'regimm' instruction with RT = %#01X at PC = %#04X.",
+                    GET_RT(c), pc-4);
+                qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
+        } break;
 
-        default:
-            qWarning("Unknown 'regimm' instruction with RT = %#01X at PC = %#04X.", d.rt, pc-4);
-            qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
+
+        // Normal instruction.
+        default: switch(opcode) {
+            case 0b000010: // j
+                pc = (pc & 0x1E000000) | (GET_ADDR(c) << 2);
+                cpucount_ += 4; break;
+
+            case 0b000011: // jal
+                regs[31] = pc;
+                pc = (pc & 0x1E000000) | (GET_ADDR(c) << 2);
+                cpucount_ += 5; break;
+
+            case 0b000100: // beq
+                if (regs[GET_RS(c)] == regs[GET_RT(c)]) pc += GET_SIMM(c) << 2;
+                cpucount_ += 5; break;
+
+            case 0b000101: // bne
+                if (regs[GET_RT(c)] != regs[GET_RS(c)]) pc += GET_SIMM(c) << 2;
+                cpucount_ += 5; break;
+
+            case 0b000110: // blez
+                if ((int32_t)regs[GET_RS(c)] <= 0) pc += GET_SIMM(c) << 2;
+                cpucount_ += 5; break;
+
+            case 0b000111: // bgtz
+                if ((int32_t)regs[GET_RS(c)] > 0) pc += GET_SIMM(c) << 2;
+                cpucount_ += 5; break;
+
+            case 0b001000: // addi
+            case 0b001001: // addiu
+                regs[GET_RT(c)] = regs[GET_RS(c)] + GET_SIMM(c); break;
+
+            case 0b001010: // slti
+                regs[GET_RT(c)] = (int32_t)regs[GET_RS(c)] < GET_SIMM(c) ? 1 : 0;
+                cpucount_ += 4; break;
+
+            case 0b001011: // sltiu
+                regs[GET_RT(c)] = regs[GET_RS(c)] < GET_SIMM(c) ? 1 : 0;
+                cpucount_ += 4; break;
+
+            case 0b001100: // andi
+                regs[GET_RT(c)] = regs[GET_RS(c)] & GET_IMM(c);
+                cpucount_ += 3; break;
+
+            case 0b001101: // ori
+                regs[GET_RT(c)] = regs[GET_RS(c)] | GET_IMM(c);
+                cpucount_ += 3; break;
+
+            case 0b001110: // xori
+                regs[GET_RT(c)] = regs[GET_RS(c)] ^ GET_IMM(c);
+                cpucount_ += 3; break;
+
+            case 0b001111: // lui
+                regs[GET_RT(c)] = GET_SIMM(c) << 16;
+                cpucount_ += 3; break;
+
+            case 0b100011: // lw
+                regs[GET_RT(c)] = bus_.GetValue(regs[GET_RS(c)] + GET_SIMM(c));
+                cpucount_ += 6; break;
+
+            case 0b101011: // sw
+                bus_.SetValue(regs[GET_RS(c)] + GET_SIMM(c), regs[GET_RT(c)]);
+                cpucount_ += 6; break;
+
+            default:
+                qWarning("Unknown instruction with OPCODE = %#01X at PC = %#04X.", opcode, pc-4);
+                qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
+        } break;
     }
 }
 

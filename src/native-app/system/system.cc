@@ -7,8 +7,8 @@ License MIT
 
 */
 
-#include "app/system.h"
-#include "app/sysworker.h"
+#include "system/system.h"
+#include "system/sysworker.h"
 #include "utils/range.h"
 
 #include <stdio.h>

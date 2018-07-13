@@ -9,7 +9,7 @@ License MIT
 
 #pragma once
 
-#include "app/system.h"
+#include "system/system.h"
 
 #include <QtCore/QObject>
 

@@ -9,7 +9,6 @@ License MIT
 
 #pragma once
 
-#include "core/disassembler.h"
 #include "core/bus.h"
 
 namespace core {
@@ -54,9 +53,6 @@ private:
 
     // The CPU bus.
     Bus &bus_;
-
-    // Instruction disassembler.
-    Disassembler d;
 
     // CPU registers.
     uint32_t pc;

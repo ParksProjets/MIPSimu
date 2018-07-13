@@ -1,6 +1,6 @@
 /*
 
-Instruction disassembler.
+Instruction dumper.
 
 Copyright (C) 2018, Guillaume Gonnet
 License MIT
@@ -11,15 +11,15 @@ License MIT
 
 #include <stdint.h>
 
-namespace core {
+namespace debugger {
 
 
-// Instruction disassembler.
-class Disassembler {
+// Instruction dumper.
+class InstDump {
 public:
 
-    // Disassemble an instruction.
-    void Disassemble(uint32_t code);
+    // Dump an instruction.
+    void Dump(uint32_t code);
 
 
     // Instruction parameters.
@@ -32,4 +32,4 @@ public:
 };
 
 
-} // namespace core
+} // namespace debugger

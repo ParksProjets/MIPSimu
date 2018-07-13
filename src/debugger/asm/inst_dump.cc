@@ -1,15 +1,15 @@
 /*
 
-Instruction disassembler.
+Instruction dumper.
 
 Copyright (C) 2018, Guillaume Gonnet
 License MIT
 
 */
 
-#include "core/disassembler.h"
+#include "debugger/asm/inst_dump.h"
 
-namespace core {
+namespace debugger {
 
 
 // Instruction masks.
@@ -17,8 +17,8 @@ static constexpr uint32_t mask6 = 0b111111;
 static constexpr uint32_t mask5 = 0b11111;
 
 
-// Disassemble an instruction.
-void Disassembler::Disassemble(uint32_t code)
+// Dump an instruction.
+void InstDump::Dump(uint32_t code)
 {
     func = code & mask6;
     shamt = (code >> 6) & mask5;
@@ -34,4 +34,4 @@ void Disassembler::Disassemble(uint32_t code)
 }
 
 
-} // namespace core
+} // namespace debugger

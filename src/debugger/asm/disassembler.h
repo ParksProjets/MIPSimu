@@ -9,7 +9,7 @@ License MIT
 
 #pragma once
 
-#include "core/disassembler.h"
+#include "debugger/asm/inst_dump.h"
 
 #include <string>
 #include <stdint.h>
@@ -38,7 +38,7 @@ private:
 
 
     const char **registers_;
-    core::Disassembler d;
+    InstDump d;
 };
 
 

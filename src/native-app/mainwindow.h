@@ -9,7 +9,7 @@ License MIT
 
 #pragma once
 
-#include "app/screen.h"
+#include "external/screen.h"
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QHBoxLayout>

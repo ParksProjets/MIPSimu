@@ -15,20 +15,23 @@ find_package(Qt5Widgets)
 # Source files
 set(SOURCES
 
-    "src/app/system.h"
-    "src/app/system.cc"
-    "src/app/sysworker.h"
-    "src/app/sysworker.cc"
-    "src/app/memoryloader.h"
-    "src/app/memoryloader.cc"
-    "src/app/screen.h"
-    "src/app/screen.cc"
-    "src/app/keyboard.h"
-    "src/app/keyboard.cc"
+    "system/system.h"
+    "system/system.cc"
+    "system/sysworker.h"
+    "system/sysworker.cc"
+    "system/memoryloader.h"
+    "system/memoryloader.cc"
+    "external/screen.h"
+    "external/screen.cc"
+    "external/keyboard.h"
+    "external/keyboard.cc"
 
     "mainwindow.h"
     "mainwindow.cc"
 )
+
+# Include this directory
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
 # Create the library

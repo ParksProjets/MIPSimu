@@ -7,7 +7,7 @@ License MIT
 
 */
 
-#include "app/keyboard.h"
+#include "external/keyboard.h"
 
 #include <QtWidgets/QApplication>
 

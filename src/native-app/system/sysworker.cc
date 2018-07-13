@@ -7,7 +7,7 @@ License MIT
 
 */
 
-#include "app/sysworker.h"
+#include "system/sysworker.h"
 
 #include <QtCore/QThread>
 #include <QtCore/QElapsedTimer>

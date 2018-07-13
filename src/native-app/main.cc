@@ -7,8 +7,8 @@ License MIT
 
 */
 
-#include "app/system.h"
-#include "app/mainwindow.h"
+#include "system/system.h"
+#include "mainwindow.h"
 
 #include <QtWidgets/QApplication>
 #include <QtCore/QCommandLineParser>

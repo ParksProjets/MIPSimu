@@ -94,7 +94,7 @@ Disassembler::Disassembler(bool named_register)
 // Disassemble an instruction.
 std::string Disassembler::Disassemble(uint32_t code)
 {
-    d.Disassemble(code);
+    d.Dump(code);
 
     if (d.opcode == 0)
         return DisassembleSpecial();

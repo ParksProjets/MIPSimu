@@ -7,7 +7,7 @@ License MIT
 
 */
 
-#include "app/screen.h"
+#include "external/screen.h"
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>

@@ -7,7 +7,7 @@ License MIT
 
 */
 
-#include "app/mainwindow.h"
+#include "mainwindow.h"
 
 #include <assert.h>
 

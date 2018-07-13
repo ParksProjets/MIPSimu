@@ -9,10 +9,10 @@ License MIT
 
 #pragma once
 
-#include "app/screen.h"
-#include "app/mainwindow.h"
-#include "app/memoryloader.h"
-#include "app/keyboard.h"
+#include "mainwindow.h"
+#include "system/memoryloader.h"
+#include "external/screen.h"
+#include "external/keyboard.h"
 
 #include "core/bus.h"
 #include "core/processor.h"

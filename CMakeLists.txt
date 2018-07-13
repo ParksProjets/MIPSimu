@@ -21,19 +21,18 @@ option(MIPSIMU_BUILD_NATIVE "Build MIPSimu native or JS version?" ON)
 # Include source directory
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-# Tells CMake to run moc automatically
-set(CMAKE_AUTOMOC ON)
+# Use C++14
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Import Qt5
-find_package(Qt5Widgets)
+# set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 
 
 # Source files
 set(SOURCES
     "src/core/bus.h"
     "src/core/bus.cc"
-    "src/core/disassembler.h"
-    "src/core/disassembler.cc"
     "src/core/processor.h"
     "src/core/processor.cc"
 
@@ -48,6 +47,8 @@ set(SOURCES
 
     "src/debugger/asm/disassembler.h"
     "src/debugger/asm/disassembler.cc"
+    "src/debugger/asm/inst_dump.h"
+    "src/debugger/asm/inst_dump.cc"
     "src/debugger/peripheral.h"
     "src/debugger/peripheral.cc"
     "src/debugger/debugger.h"
@@ -59,12 +60,16 @@ set(SOURCES
 
 # Select the right configuration.
 if(MIPSIMU_BUILD_NATIVE)
+    find_package(Qt5Widgets)
+
     add_subdirectory("src/native-app")
+    include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/native-app")
 
     set(SOURCES ${SOURCES} "src/native-app/main.cc")
     link_libraries(mipsimu-native Qt5::Widgets)
 else()
     add_subdirectory("src/js-app")
+    include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/js-app")
 
     set(SOURCES ${SOURCES} "src/native-app/main.cc")
     link_libraries(mipsimu-js)    
@@ -72,5 +77,4 @@ endif()
 
 
 # Create the executable
-set(CMAKE_BUILD_TYPE Debug)
 add_executable(mipsimu ${SOURCES})
