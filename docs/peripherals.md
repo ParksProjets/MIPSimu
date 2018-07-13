@@ -3,8 +3,7 @@
 
 ### VGA Screen
 
-This is a 16 bits color, 320x240 screen.
-
+This is a 16 bits color, 320x240 screen.  
 The screen is mapped at address `0x80000`. Each pixel is a 32 bit word.
 
 ```c
@@ -18,8 +17,16 @@ vga[y * 320 + y] = 0xFCC0; // Color pixel at (20, 40) in orange
 
 ### Timer
 
+The timer is mapped at address `0x4010`.  
+See `led-chase` test for more details.
+
 ```c
-// TO DO
+volatile uint32_t *timer = (volatile uint32_t *)0x4010;
+
+void SetTimer(uint32_t period, uint32_t thresold) {
+    timer[0] = period;
+    timer[1] = thresold;
+}
 ```
 
 
@@ -41,7 +48,7 @@ leds = (1 << 3) | (0 << 2) | (1 << 1) | 0; // 🔴⭕🔴⭕
 The push buttons are mapped at address `0x4004`. Each button is on bit, starting at bit 0.
 
 ```c
-// TO DO
+volatile uint32_t *btns = (volatile uint32_t *)0x4004;
 ```
 
 
