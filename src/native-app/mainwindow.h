@@ -24,7 +24,7 @@ class MainWindow : public QWidget {
     Q_OBJECT
 public:
 
-    MainWindow();
+    MainWindow(double scale = 0);
 
 
     // Set the VGA screen.
@@ -45,6 +45,7 @@ private:
 
     QHBoxLayout *layout_;
 
+    double scale_;
     Screen *screen_;
     std::atomic<uint8_t> leds_;
 };

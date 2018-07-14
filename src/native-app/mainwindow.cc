@@ -31,8 +31,9 @@ namespace {
 
 
 // Constructor
-MainWindow::MainWindow()
-    : screen_{nullptr},
+MainWindow::MainWindow(double scale)
+    : scale_{scale},
+      screen_{nullptr},
       leds_{0b1010}
 {
     layout_ = new QHBoxLayout;
@@ -60,7 +61,7 @@ void MainWindow::SetScreen(Screen *screen)
 void MainWindow::CalculateResize()
 {
     assert(screen_ != nullptr);
-    screen_->CalculateSize();
+    screen_->CalculateSize(scale_);
 
     setMinimumSize(screen_->width() + 2, screen_->height() + 2);
 }

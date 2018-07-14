@@ -19,30 +19,45 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
+
+    // Parse the command line.
     QCommandLineParser parser;
     parser.addHelpOption();
     parser.setApplicationDescription("A MIPS simulator.");
 
+    // Input program (bin format).
     parser.addPositionalArgument("program", "The binary program to load.");
 
+    // Enable debug mode?
     QCommandLineOption debug_option("d", "Enable debug mode.");
     parser.addOption(debug_option);
 
+    // Use the second RAM?
     QCommandLineOption ram2_option("r2", "Use the second RAM.");
     parser.addOption(ram2_option);
 
-    QCommandLineOption offset_option("o", "Start cycle offset (default=0).", "number");
-    offset_option.setDefaultValue("0");
+    // Start cycle offset.
+    QCommandLineOption offset_option("o", "Start cycle offset (default=500000).", "number");
+    offset_option.setDefaultValue("5000000");
     parser.addOption(offset_option);
 
+    // Screen scale.
+    QCommandLineOption scale_option("s", "Scale of the screen (default=0.0).", "scale");
+    offset_option.setDefaultValue("0.0");
+    parser.addOption(scale_option);
+
+    // Process the command line.
     parser.process(app);
+
     int offset = parser.value("o").toInt();
-
-    app::MainWindow window;
-    app::System system(window, parser.isSet("r2"), parser.isSet("d"), offset);
-
     auto args = parser.positionalArguments();
 
+
+    // Create the main window and system.
+    app::MainWindow window(parser.value("s").toDouble());
+    app::System system(window, parser.isSet("r2"), parser.isSet("d"), offset);
+
+    // Initialize and start the system.
     system.Initialize();
     system.loader().Load(args.value(0));
 

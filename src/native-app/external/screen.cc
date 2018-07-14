@@ -28,12 +28,14 @@ Screen::Screen(int width, int height)
 
 
 // Calculate minimum size of the screen.
-void Screen::CalculateSize()
+void Screen::CalculateSize(double s)
 {
-    auto rect = QApplication::desktop()->availableGeometry(this);
     constexpr int kScreenMargins = 20;
 
-    double s = (rect.height() - kScreenMargins) / height_;
+    if (s == 0) {
+        auto rect = QApplication::desktop()->availableGeometry(this);
+        s = (rect.height() - kScreenMargins) / height_;
+    }
 
     scale(s, s);
     resize(s * width_, s * height_);

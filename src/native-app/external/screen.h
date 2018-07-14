@@ -33,7 +33,7 @@ public:
     void UpdateScreen();
 
     // Calculate minimum size of the screen.
-    void CalculateSize();
+    void CalculateSize(double scale = 0);
 
 
 private:
