@@ -1,5 +1,12 @@
 # MIPSimu
 
+![](docs/flapsthemips.gif)
+
+Find this game with some other applications in [Mips-Applications][apps]
+repository.
+
+
+
 ## Introduction
 
 **MIPSimu** is a basic MIPS processor emulator. It supports only a subset of the
@@ -68,4 +75,5 @@ This project is based on [CamelusMips][CamelusMips], under the MIT license.
 [mips-periphs]: docs/peripherals.md
 [mips-inst]: docs/instructions.md
 
+[apps]: https://github.com/ParksProjets/Mips-Applications
 [CamelusMips]: https://github.com/MForever78/CamelusMips
