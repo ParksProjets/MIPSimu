@@ -45,7 +45,7 @@ constexpr int kScreenHeight = 240;
 class System {
 public:
 
-    System(MainWindow &window, bool use_ram2 = false, bool debug = false, int offset = 0);
+    System(MainWindow &window, bool debug = false, int offset = 500000);
 
 
     // Initialize the system.
@@ -80,9 +80,6 @@ private:
 
     // Are we in debug mode?
     bool debug_;
-
-    // Do we use the second RAM ?
-    bool use_ram2_;
 
     // Start cycle offset.
     int offset_;

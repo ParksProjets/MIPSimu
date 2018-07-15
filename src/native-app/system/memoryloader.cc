@@ -18,10 +18,9 @@ namespace app {
 
 
 // Constructor.
-MemoryLoader::MemoryLoader(peripherals::Ram &ram, peripherals::Ram &ram2, bool use_ram2)
+MemoryLoader::MemoryLoader(peripherals::Ram &ram, peripherals::Ram &ram2)
     : ram_{ram},
-      ram2_{ram2},
-      use_ram2_{use_ram2}
+      ram2_{ram2}
 {
 
 }
@@ -36,23 +35,22 @@ void MemoryLoader::Load(const QString &filename)
     if (!file.open(QIODevice::ReadOnly))
         qFatal("Can't load RAM data.");
 
-    if (!use_ram2_ && file.size() > ram_.size())
-        qFatal("RAM to small (%dB) for program data (%dB)", ram_.size(), file.size());
 
+    // Read data for first RAM.
     uint32_t *buffer = ram_.buffer();
     uint32_t readed = file.read(reinterpret_cast<char *>(buffer), ram_.size());
 
     for (int i = 0; i < readed / 4; i++)
         qToBigEndian(buffer[i], reinterpret_cast<uchar *>(buffer + i));
 
-    if (use_ram2_) {
-        file.seek(0x20000);
-        uint32_t *buffer = ram2_.buffer();
-        uint32_t readed = file.read(reinterpret_cast<char *>(buffer), ram2_.size());
+    
+    // Read data for second RAM.
+    file.seek(0x20000);
+    buffer = ram2_.buffer();
+    readed = file.read(reinterpret_cast<char *>(buffer), ram2_.size());
 
-        for (int i = 0; i < readed / 4; i++)
-            qToBigEndian(buffer[i], reinterpret_cast<uchar *>(buffer + i));
-    }
+    for (int i = 0; i < readed / 4; i++)
+        qToBigEndian(buffer[i], reinterpret_cast<uchar *>(buffer + i));
 
     file.close();
 }

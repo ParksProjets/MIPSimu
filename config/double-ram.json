@@ -1,9 +1,0 @@
-{
-    "memory": [{
-        "start": 0,
-        "length": 8192
-    }, {
-        "start": 131072,
-        "length": 32768
-    }]
-}

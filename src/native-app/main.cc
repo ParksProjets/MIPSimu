@@ -32,10 +32,6 @@ int main(int argc, char* argv[])
     QCommandLineOption debug_option("d", "Enable debug mode.");
     parser.addOption(debug_option);
 
-    // Use the second RAM?
-    QCommandLineOption ram2_option("r2", "Use the second RAM.");
-    parser.addOption(ram2_option);
-
     // Start cycle offset.
     QCommandLineOption offset_option("o", "Start cycle offset (default=500000).", "number");
     offset_option.setDefaultValue("5000000");
@@ -55,7 +51,7 @@ int main(int argc, char* argv[])
 
     // Create the main window and system.
     app::MainWindow window(parser.value("s").toDouble());
-    app::System system(window, parser.isSet("r2"), parser.isSet("d"), offset);
+    app::System system(window, parser.isSet("d"), offset);
 
     // Initialize and start the system.
     system.Initialize();

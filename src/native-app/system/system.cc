@@ -17,19 +17,18 @@ namespace app {
 
 
 // Constructor
-System::System(MainWindow &window, bool use_ram2, bool debug, int offset)
+System::System(MainWindow &window, bool debug, int offset)
     : window_{window},
       screen_{kScreenWidth, kScreenHeight},
       processor_{bus_},
-      loader_{ram_, ram2_, use_ram2},
-      use_ram2_{use_ram2},
+      loader_{ram_, ram2_},
       debug_{debug},
       offset_{offset}
 {
     window.SetScreen(&screen_);
 
     if (debug_) {
-        printf("Debug mode activated\n");
+        printf("Debug mode enabled\n");
         printf("Using start cycle offset of %d\n\n", offset_);
     }
 }
@@ -55,11 +54,9 @@ void System::Initialize()
     bus_.Add(&timer_, utils::range<uint32_t>(0x4010, 0x4017));
     bus_.Add(&vga_, utils::range<uint32_t>(0x80000, 0xCAFFF));
 
-    // If we use the second RAM
-    if (use_ram2_) {
-        ram2_.Allocate(0x8000);
-        bus_.Add(&ram2_, utils::range<uint32_t>(0x20000, 0x27FFF));
-    }
+    // Allocate the second RAM.
+    ram2_.Allocate(0x8000);
+    bus_.Add(&ram2_, utils::range<uint32_t>(0x20000, 0x27FFF));
 
     // If we are in debug mode: add the debug peripheral.
     if (debug_)
