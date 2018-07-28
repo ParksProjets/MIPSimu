@@ -13,11 +13,12 @@ repository.
 MIPS III instruction set. It emulates a **non-pipelined** MIPS processor.
 
 **MIPSimu** has the following peripherals:
+- two RAMs
 - VGA 320x240 screen
 - CPU timer
 - 4 LEDs
 - 3 push buttons
-- debuggers
+- debugger
 
 For more information, you can see [here][mips-periphs] the documentation about
 these peripherals.
@@ -30,14 +31,17 @@ instructions and the number of cycles for each instruction.
 
 ## Build MIPSimu
 
-**MIPSimu** requires **Qt 5.2** (or newer).  
-Also must you have **CMake** to build the application (minimum version required
-is **3.3**).
-
-**MIPSimu** has two CMake options:
+**MIPSimu** requires **CMake** (version **3.3** or newer).  
+It has two CMake options:
 
 - `MIPSIMU_BUILD_NATIVE` – `ON` to build the native Qt app, `OFF` for the JS app
 - `MIPSIMU_ENABLE_TESTS` – `ON` to build unit tests.
+
+The **native app** and the **unit tests** require **Qt 5.2** (or newer).
+
+The **js app** requires **[emscripten][emscripten]**. Before running CMake,
+specifying the toolchain file with CMake variable
+`CMAKE_TOOLCHAIN_FILE=<ensdk>/emscripten/version/cmake/Modules/Platform/Emscripten.cmake`.
 
 
 
@@ -76,4 +80,5 @@ This project is based on [CamelusMips][CamelusMips], under the MIT license.
 [mips-inst]: docs/instructions.md
 
 [apps]: https://github.com/ParksProjets/Mips-Applications
+[emscripten]: http://kripken.github.io/emscripten-site/index.html
 [CamelusMips]: https://github.com/MForever78/CamelusMips

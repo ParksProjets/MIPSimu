@@ -60,6 +60,8 @@ set(SOURCES
 
 # Select the right configuration.
 if(MIPSIMU_BUILD_NATIVE)
+    # Build the native app.
+
     find_package(Qt5Widgets)
 
     add_subdirectory("src/native-app")
@@ -67,12 +69,20 @@ if(MIPSIMU_BUILD_NATIVE)
 
     set(SOURCES ${SOURCES} "src/native-app/main.cc")
     link_libraries(mipsimu-native Qt5::Widgets)
+
 else()
+    # Build the JS app using Enscripten.
+
+    if (NOT EMSCRIPTEN)
+        message(FATAL_ERROR "Emscripten toolschain not found. See README for more information.")
+    endif()
+
     add_subdirectory("src/js-app")
     include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/js-app")
 
     set(SOURCES ${SOURCES} "src/native-app/main.cc")
     link_libraries(mipsimu-js)    
+
 endif()
 
 

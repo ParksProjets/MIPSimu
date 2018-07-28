@@ -9,10 +9,7 @@ License MIT
 
 #pragma once
 
-#include "app/screen.h"
-#include "app/mainwindow.h"
-#include "app/memoryloader.h"
-#include "app/keyboard.h"
+#include "external/screen.h"
 
 #include "core/bus.h"
 #include "core/processor.h"
@@ -21,10 +18,6 @@ License MIT
 #include "peripherals/external.h"
 #include "peripherals/timer.h"
 #include "peripherals/vga.h"
-
-#include "debugger/debugger.h"
-
-#include <QtCore/QThread>
 
 namespace app {
 
@@ -45,11 +38,11 @@ constexpr int kScreenHeight = 240;
 class System {
 public:
 
-    System(bool use_ram2 = false, bool debug = false, int offset = 0);
+    System();
 
 
     // Initialize the system.
-    void Initialize();
+    void Initialize(int offset = 0);
 
     // Start the system.
     void Start();
@@ -59,13 +52,8 @@ public:
 
 
     // Getters
-    bool debug() { return debug_; }
     int offset() { return offset_; }
-
-    MemoryLoader &loader() { return loader_; }
     Screen &screen() { return screen_; }
-    MainWindow &window() { return window_; }
-    KeyboardFilter &keyboard() { return keyboard_; }
 
     core::Bus &bus() { return bus_; }
     core::Processor &processor() { return processor_; }
@@ -78,26 +66,11 @@ public:
 
 private:
 
-    // Are we in debug mode?
-    bool debug_;
-
-    // Do we use the second RAM ?
-    bool use_ram2_;
-
     // Start cycle offset.
     int offset_;
 
-    // Update loop worker.
-    QThread thread_;
-
     // VGA screen and main window.
     Screen screen_;
-    MainWindow &window_;
-    KeyboardFilter keyboard_;
-
-    // RAM loader;
-    MemoryLoader loader_;
-    debugger::Debugger debugger_;
 
     // Core devices.
     core::Bus bus_;
