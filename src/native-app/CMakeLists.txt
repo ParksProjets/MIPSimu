@@ -1,5 +1,5 @@
 #
-#  Build MIPSimu
+#  Build MIPSimu - native app
 #
 #  Copyright (C) 2018, Guillaume Gonnet
 #  License MIT

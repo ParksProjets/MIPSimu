@@ -8,8 +8,7 @@ License MIT
 */
 
 #include "core/processor.h"
-
-#include <QtCore/QtGlobal>
+#include "core/debug.h"
 
 #include <string.h>
 
@@ -133,9 +132,9 @@ void Processor::ProcessNext()
                 cpucount_ += 4; break;
 
             default:
-                qWarning("Unknown 'special' instruction with FUNC = %#01X at PC = %#04X.",
+                warn("Unknown 'special' instruction with FUNC = %#01X at PC = %#04X.",
                     GET_FUNC(c), pc-4);
-                qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
+                warn("Word: %#08X.", bus_.GetValue(pc - 4));
         } break;
 
 
@@ -160,9 +159,9 @@ void Processor::ProcessNext()
                 cpucount_ += 5; break;
 
             default:
-                qWarning("Unknown 'regimm' instruction with RT = %#01X at PC = %#04X.",
+                warn("Unknown 'regimm' instruction with RT = %#01X at PC = %#04X.",
                     GET_RT(c), pc-4);
-                qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
+                warn("Word: %#08X.", bus_.GetValue(pc - 4));
         } break;
 
 
@@ -230,8 +229,8 @@ void Processor::ProcessNext()
                 cpucount_ += 6; break;
 
             default:
-                qWarning("Unknown instruction with OPCODE = %#01X at PC = %#04X.", opcode, pc-4);
-                qWarning("Word: %#08X.", bus_.GetValue(pc - 4));
+                warn("Unknown instruction with OPCODE = %#01X at PC = %#04X.", opcode, pc-4);
+                warn("Word: %#08X.", bus_.GetValue(pc - 4));
         } break;
     }
 }
