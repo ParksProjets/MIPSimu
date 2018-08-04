@@ -9,25 +9,31 @@ License MIT
 
 #include "system/system.h"
 
+#include <emscripten.h>
 
 
 // The whole system.
-static System system;
+static app::System system_app;
 
 
 
 // Initialize the application.
-extern "C" void Initialize(int width, int height, unsigned char *u8pixels)
+EMSCRIPTEN_KEEPALIVE
+extern "C" void Initialize(unsigned char *u8mem, unsigned char *u8pixels)
 {
-    system.Initialize();
+    system_app.Initialize(u8mem, u8pixels, 500000);
 }
 
 
 
 // Update and render the application.
+EMSCRIPTEN_KEEPALIVE
 extern "C" void UpdateAndRender()
 {
-    // TODO
+    system_app.Update();
 
-    
+
+    // TODO.
+    // window_.SetLedValue(external_.GetValue(0));
+    // external_.SetButtonValue(keyboard_.GetButtonValue());
 }

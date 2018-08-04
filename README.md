@@ -72,8 +72,6 @@ This project is under the MIT license.
 You can find the whole license in the file named `LICENSE` at the root of the
 repository.
 
-This project is based on [CamelusMips][CamelusMips], under the MIT license.
-
 
 
 [mips-periphs]: docs/peripherals.md
@@ -81,4 +79,3 @@ This project is based on [CamelusMips][CamelusMips], under the MIT license.
 
 [apps]: https://github.com/ParksProjets/Mips-Applications
 [emscripten]: http://kripken.github.io/emscripten-site/index.html
-[CamelusMips]: https://github.com/MForever78/CamelusMips

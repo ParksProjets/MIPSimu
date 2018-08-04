@@ -17,7 +17,6 @@ License MIT
 #include "peripherals/ram.h"
 #include "peripherals/external.h"
 #include "peripherals/timer.h"
-#include "peripherals/vga.h"
 
 namespace app {
 
@@ -27,10 +26,6 @@ constexpr int kClockFrequency = 50 * 1000 * 1000;
 
 // The number desired of FPS.
 constexpr int kFramePerSecond = 30;
-
-// Screen size.
-constexpr int kScreenWidth = 320;
-constexpr int kScreenHeight = 240;
 
 
 
@@ -42,13 +37,10 @@ public:
 
 
     // Initialize the system.
-    void Initialize(int offset = 0);
+    void Initialize(unsigned char *u8mem, unsigned char *u8pixels, int offset = 0);
 
-    // Start the system.
-    void Start();
-
-    // Stop the system.
-    void Stop();
+    // Update the system.
+    void Update();
 
 
     // Getters
@@ -61,7 +53,6 @@ public:
     peripherals::Ram &ram() { return ram_; }
     peripherals::External &external() { return external_; }
     peripherals::Timer &timer() { return timer_; }
-    peripherals::Vga &vga() { return vga_; }
 
 
 private:
@@ -81,7 +72,6 @@ private:
     peripherals::Ram ram2_;
     peripherals::External external_;
     peripherals::Timer timer_;
-    peripherals::Vga vga_;
 };
 
 

@@ -15,9 +15,20 @@ namespace peripherals {
 // Allocate the RAM memory.
 void Ram::Allocate(uint32_t bytes)
 {
-    data_.reset(new uint32_t[bytes >> 2]);
+    managed_data_.reset(new uint32_t[bytes >> 2]);
+    data_ = managed_data_.get();
+
     size_ = bytes;
 }
+
+
+// Attach some data to the RAM.
+void Ram::Attach(unsigned char *data, uint32_t size)
+{
+    data_ = reinterpret_cast<uint32_t *>(data);
+    size_ = size;
+}
+
 
 
 // Set a value at the address given.

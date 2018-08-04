@@ -23,6 +23,9 @@ public:
     // Allocate the RAM memory.
     void Allocate(uint32_t bytes);
 
+    // Attach some data to the RAM.
+    void Attach(unsigned char *data_, uint32_t size);
+
 
     // Set a value at the address given.
     void SetValue(uint32_t addr, uint32_t value) override;
@@ -32,7 +35,7 @@ public:
 
 
     // Get the RAM buffer.
-    uint32_t *buffer() { return data_.get(); }
+    uint32_t *buffer() { return data_; }
 
     // Get the RAM size.
     uint32_t size() { return size_; }
@@ -40,7 +43,8 @@ public:
 
 private:
 
-    std::unique_ptr<uint32_t[]> data_;
+    std::unique_ptr<uint32_t[]> managed_data_;
+    uint32_t *data_;
 
     uint32_t size_;
 };
