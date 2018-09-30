@@ -43,6 +43,12 @@ private:
     void CalculateResize();
 
 
+    // Prevent scroll event.
+    void wheelEvent(QWheelEvent *event);
+
+    // When we close this window: stop the applcation.
+
+
     QHBoxLayout *layout_;
 
     double scale_;

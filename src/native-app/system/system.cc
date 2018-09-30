@@ -11,6 +11,8 @@ License MIT
 #include "system/sysworker.h"
 #include "utils/range.h"
 
+#include <QtCore/QCoreApplication>
+
 #include <stdio.h>
 
 namespace app {
@@ -31,6 +33,8 @@ System::System(MainWindow &window, bool debug, int offset)
         printf("Debug mode enabled\n");
         printf("Using start cycle offset of %d\n\n", offset_);
     }
+
+    QObject::connect(qApp, &QCoreApplication::aboutToQuit, this, &System::Stop);
 }
 
 
@@ -94,6 +98,7 @@ void System::Stop()
 
     keyboard_.SetEnabled(false);
 
+    thread_.requestInterruption();
     thread_.quit();
     thread_.wait();
 }

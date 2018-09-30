@@ -42,7 +42,8 @@ constexpr int kScreenHeight = 240;
 
 
 // The whole system.
-class System {
+class System : public QObject {
+    Q_OBJECT
 public:
 
     System(MainWindow &window, bool debug = false, int offset = 500000);

@@ -11,10 +11,12 @@ License MIT
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
+#include <QtGui/QWheelEvent>
 
 #include <atomic>
 
 namespace app {
+
 
 
 // Constructor.
@@ -22,6 +24,9 @@ Screen::Screen(int width, int height)
     : width_{width},
       height_{height}
 {
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     setScene(&scene_);
 }
 
@@ -53,7 +58,6 @@ void Screen::UpdateImageScreen(const uint32_t *screen)
 }
 
 
-
 // Update the screen.
 void Screen::UpdateScreen()
 {
@@ -66,5 +70,13 @@ void Screen::UpdateScreen()
 }
 
 
-} // namespace app
 
+// Prevent scroll event.
+void Screen::wheelEvent(QWheelEvent *event)
+{
+    event->accept();
+}
+
+
+
+} // namespace app

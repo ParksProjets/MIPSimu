@@ -9,6 +9,8 @@ License MIT
 
 #include "mainwindow.h"
 
+#include <QtGui/QWheelEvent>
+
 #include <assert.h>
 
 namespace app {
@@ -56,7 +58,6 @@ void MainWindow::SetScreen(Screen *screen)
 }
 
 
-
 // Calculate minimum size of the window.
 void MainWindow::CalculateResize()
 {
@@ -68,12 +69,19 @@ void MainWindow::CalculateResize()
 
 
 
+// Prevent scroll event.
+void MainWindow::wheelEvent(QWheelEvent *event)
+{
+    event->accept();
+}
+
+
+
 // Set the value of the leds.
 void MainWindow::SetLedValue(uint8_t value)
 {
     leds_ = value;
 }
-
 
 
 // Update the title with the LEDs value.

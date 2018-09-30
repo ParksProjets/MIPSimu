@@ -51,12 +51,10 @@ void SystemWorker::RunUpdateLoop()
     QElapsedTimer timer;
     timer.start();
 
-    qint64 current_time = 0;
     qint64 frame_count = 0;
     qint64 elapsed, desired_cpucount;
 
-    while (true) {
-        // desired_cpucount = current_time * ipms;
+    while (!QThread::currentThread()->isInterruptionRequested()) {
         desired_cpucount = offset_ + (frame_count++) * ipf;
 
         while (processor_.cpucount() < desired_cpucount)
@@ -68,10 +66,6 @@ void SystemWorker::RunUpdateLoop()
 
         emit RenderGui();
 
-        // elapsed = current_time;
-        // current_time = timer.elapsed();
-
-        // elapsed = delay - (current_time - elapsed);
         elapsed = delay - timer.restart();
         if (elapsed > 0) QThread::msleep(elapsed);
     }
@@ -88,7 +82,7 @@ void SystemWorker::RunUpdateLoopDebug()
     qint64 frame_count = 0;
     qint64 elapsed, desired_cpucount;
 
-    while (true) {
+    while (!QThread::currentThread()->isInterruptionRequested()) {
         desired_cpucount = offset_ + (frame_count++) * ipf;
 
         while (processor_.cpucount() < desired_cpucount)

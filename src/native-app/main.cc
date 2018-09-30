@@ -11,6 +11,7 @@ License MIT
 #include "mainwindow.h"
 
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QDesktopWidget>
 #include <QtCore/QCommandLineParser>
 
 
@@ -34,7 +35,7 @@ int main(int argc, char* argv[])
 
     // Start cycle offset.
     QCommandLineOption offset_option("o", "Start cycle offset (default=500000).", "number");
-    offset_option.setDefaultValue("5000000");
+    offset_option.setDefaultValue("500000");
     parser.addOption(offset_option);
 
     // Screen scale.
@@ -57,8 +58,9 @@ int main(int argc, char* argv[])
     system.Initialize();
     system.loader().Load(args.value(0));
 
+    window.move(qApp->desktop()->screen()->rect().center() - window.rect().center());
     window.show();
-    system.Start();
 
+    system.Start();
     return app.exec();
 }

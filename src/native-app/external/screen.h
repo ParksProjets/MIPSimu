@@ -38,6 +38,10 @@ public:
 
 private:
 
+    // Prevent scroll event.
+    void wheelEvent(QWheelEvent *event);
+
+
     QGraphicsScene scene_;
 
     int width_, height_;
