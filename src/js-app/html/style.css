@@ -19,5 +19,7 @@ body {
 
 
 #screen {
-    /* TODO */
+    image-rendering: pixelated;
+    transform-origin: top left;
+    transform: scale(2);
 }

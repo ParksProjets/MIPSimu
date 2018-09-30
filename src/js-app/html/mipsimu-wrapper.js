@@ -2,18 +2,15 @@
 
 JS wrapper for MIPSimu.
 
-https://github.com/jonvaldes/canvascripten/blob/master/index.html
-
 Copyright (C) 2018, Guillaume Gonnet
 License MIT
 
 */
 
+// Screen canvas.
 var width = 320;
 var height = 240;
 
-
-// Screen canvas.
 var canvas = document.getElementById("screen");
 canvas.width = width;
 canvas.height = height;
@@ -23,36 +20,34 @@ var imageData = ctx.getImageData(0, 0, width, height);
 
 
 // Memory containers.
+var memSize = 0x28000;
 var mem, vga;
-
-
-// C function wrapper.
-// var Initialize = Module.cwrap('Initialize', 'void', ['number', 'number']);
-// var UpdateAndRender = Module.cwrap('UpdateAndRender', 'void', []);
-
-
-
 
 // Handle of "requestAnimationFrame".
 var animHandle = 0;
 
 
+// Do an assertion.
+function assert(cond, message) {
+    if (!cond)
+        throw new Error(message);
+}
+
+
+
 // Starts the emulator.
 function StartEmulator() {
 
-    // Update the application.
     function update() {
-        Module._UpdateAndRender(); // performance.now() - start);
-        start = performance.now();
-    
+        Module._UpdateAndRender();
+
         imageData.data.set(vga);
         ctx.putImageData(imageData, 0, 0);
 
         animHandle = requestAnimationFrame(update);
     };
 
-    var start = performance.now();
-    update();
+    animHandle = requestAnimationFrame(update);
 }
 
 
@@ -65,7 +60,9 @@ function StopEmulator() {
 
 // Load some binray data into the memory.
 function LoadData(buffer) {
-    var memView = new DataView(mem.buffer);
+    assert(buffer.byteLength <= memSize, "Loaded data too big.");
+
+    var memView = new DataView(mem.buffer, mem.byteOffset, memSize);
     var bufView = new DataView(buffer);
 
     for (var i = 0; i < buffer.byteLength; i += 4)
@@ -78,6 +75,7 @@ function LoadData(buffer) {
 // Loads binary data from a file.
 function LoadFromFile() {
     StopEmulator();
+
     // TODO.
 }
 
@@ -89,27 +87,31 @@ function LoadFromUrl(url) {
     fetch(url)
         .then(resp => resp.arrayBuffer())
         .then(LoadData)
-        .catch(() => alert("Can't load default MIPS application."));
+        .catch((e) => {
+            console.log(e);
+            alert("Can't load default MIPS application.")
+        });
 }
 
 
 
-
+// When the application is ready.
 Module.onRuntimeInitialized = () => {
-
     // Screen buffer.
-    var vga_size = width * height * 4;
-    var vga_ptr = Module._malloc(vga_size);
-    vga = new Uint8Array(Module.HEAPU8.buffer, vga_ptr, vga_size);
+    var vgaSize = width * height * 4;
+    var vgaPtr = Module._malloc(vgaSize);
+    assert(vgaPtr != 0, "Can't allocate VGA memory.");
+    vga = new Uint8Array(Module.HEAPU8.buffer, vgaPtr, vgaSize);
     vga.fill(0xFF);
 
     // Memory buffer.
-    var mem_ptr = Module._malloc(0x28000);
-    mem = new Uint8Array(Module.HEAPU8.buffer, mem_ptr, 0x28000);
+    var memPtr = Module._malloc(memSize);
+    assert(memPtr != 0, "Can't allocate data memory.");
+    mem = new Uint8Array(Module.HEAPU8.buffer, memPtr, memSize);
 
 
     // Initialize the application.
-    Module._Initialize(mem_ptr, vga_ptr);
+    Module._Initialize(memPtr, vgaPtr);
     console.log("Emulator initialized!");
 
     // Load the default application.

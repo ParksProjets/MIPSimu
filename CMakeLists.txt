@@ -84,7 +84,7 @@ else()
     include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/js-app")
 
     set(SOURCES ${SOURCES} "src/js-app/main.cc")
-    link_libraries(mipsimu-js)    
+    link_libraries(mipsimu-js)
 
 endif()
 

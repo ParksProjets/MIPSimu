@@ -32,7 +32,6 @@ extern "C" void UpdateAndRender()
 {
     system_app.Update();
 
-
     // TODO.
     // window_.SetLedValue(external_.GetValue(0));
     // external_.SetButtonValue(keyboard_.GetButtonValue());

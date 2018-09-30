@@ -47,7 +47,7 @@ specifying the toolchain file with CMake variable
 
 ## Run the tests
 
-**MIPSimu** has two kind of tests: unit tests and real program tests, respectively
+**MIPSimu** has two kinds of tests: unit tests and real program tests, respectively
 in the `unittests` and `tests` folders.
 
 

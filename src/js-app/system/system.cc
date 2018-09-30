@@ -39,7 +39,6 @@ void System::Initialize(unsigned char *u8mem, unsigned char *u8pixels, int offse
     // Options.
     offset_ = offset;
 
-
     // Allocate the needed memory.
     ram_.Attach(u8mem, 0x2000);
     screen_.Attach(u8pixels);

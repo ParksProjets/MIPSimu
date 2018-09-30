@@ -14,7 +14,6 @@ find_package(Qt5Widgets)
 
 # Source files
 set(SOURCES
-
     "system/system.h"
     "system/system.cc"
     "system/sysworker.h"
