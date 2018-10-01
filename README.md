@@ -3,7 +3,8 @@
 ![](docs/flapsthemips.gif)
 
 Find this game with some other applications in [Mips-Applications][apps]
-repository.
+repository.  
+You can try the **JS version** with [this demo][js-demo].
 
 
 
@@ -77,5 +78,6 @@ repository.
 [mips-periphs]: docs/peripherals.md
 [mips-inst]: docs/instructions.md
 
+[js-demo]: http://parksprojets.github.io/MIPSimu
 [apps]: https://github.com/ParksProjets/Mips-Applications
 [emscripten]: http://kripken.github.io/emscripten-site/index.html
