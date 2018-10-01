@@ -28,11 +28,8 @@ extern "C" void Initialize(unsigned char *u8mem, unsigned char *u8pixels)
 
 // Update and render the application.
 EMSCRIPTEN_KEEPALIVE
-extern "C" void UpdateAndRender()
+extern "C" void UpdateAndRender(int buttons)
 {
+    system_app.external().SetButtonValue(buttons);
     system_app.Update();
-
-    // TODO.
-    // window_.SetLedValue(external_.GetValue(0));
-    // external_.SetButtonValue(keyboard_.GetButtonValue());
 }

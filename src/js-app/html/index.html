@@ -25,5 +25,14 @@
     <script src="mipsimu-wrapper.js"></script>
     <script src="mipsimu-options.js"></script>
 
+    <script>
+        // When the application is ready.
+        Module.onRuntimeInitialized = () => {
+            Initialize();
+            SetScale(FindBestScale());
+            LoadFromUrl("flapsthemips.bin");
+        };
+    </script>
+
 </body>
 </html>

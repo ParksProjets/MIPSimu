@@ -21,5 +21,9 @@ body {
 #screen {
     image-rendering: pixelated;
     transform-origin: top left;
-    transform: scale(2);
+}
+
+
+h2 {
+    margin-top: 30px;
 }
