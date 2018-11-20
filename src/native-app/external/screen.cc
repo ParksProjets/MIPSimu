@@ -27,6 +27,9 @@ Screen::Screen(int width, int height)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    setFocusPolicy(Qt::NoFocus);
+    clearFocus();
+
     setScene(&scene_);
 }
 
@@ -35,7 +38,7 @@ Screen::Screen(int width, int height)
 // Calculate minimum size of the screen.
 void Screen::CalculateSize(double s)
 {
-    constexpr int kScreenMargins = 20;
+    constexpr int kScreenMargins = 40;
 
     if (s == 0) {
         auto rect = QApplication::desktop()->availableGeometry(this);
